@@ -26,8 +26,10 @@ class VaultManager extends ChangeNotifier {
     } else {
       final parent = _findParentCard(parentId);
       if (parent != null) {
-        parent.subCards.add(card);
-        parent.save();
+        try {
+          parent.subCards.add(card);
+          parent.save();
+        } catch (_) {}
       }
     }
     notifyListeners();
@@ -50,13 +52,26 @@ class VaultManager extends ChangeNotifier {
   }
 
   VaultCard? _findParentCard(String parentId) {
-    try {
-      return _vaultBox?.values.firstWhere(
-        (card) => card.id == parentId,
-      );
-    } catch (_) {
-      return null;
+    if (_vaultBox == null) return null;
+
+    return _findParentCardRecursively(_vaultBox!.values.toList(), parentId);
+  }
+
+  VaultCard? _findParentCardRecursively(
+      List<VaultCard> cards, String parentId) {
+    for (final card in cards) {
+      if (card.id == parentId) {
+        return card;
+      }
+
+      if (card.subCards.isNotEmpty) {
+        final foundCard = _findParentCardRecursively(card.subCards, parentId);
+        if (foundCard != null) {
+          return foundCard;
+        }
+      }
     }
+    return null;
   }
 
   void updateCard(VaultCard card) {
