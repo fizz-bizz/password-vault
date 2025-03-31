@@ -1,7 +1,12 @@
+// import 'dart:math';
+// import 'dart:typed_data';
+// import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:flutter/material.dart';
 import 'package:vault/Utils/vault_card.dart';
 import 'package:hive/hive.dart';
 import 'package:vault/Hive/hive_encryption_service.dart';
+import 'dart:convert';
+import 'dart:io';
 
 class VaultManager extends ChangeNotifier {
   Box<VaultCard>? _vaultBox;
@@ -26,6 +31,22 @@ class VaultManager extends ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+  Future<void> exportBackup(String path) async {
+    final data = _vaultBox!.values.map((card) => card.toJson()).toList();
+
+    final file = File('$path/vault_backup.json');
+    await file.writeAsString(jsonEncode(data));
+  }
+
+  Future<void> importBackup(String filePath) async {
+    final file = File(filePath);
+    final data = jsonDecode(await file.readAsString()) as List;
+    for (var item in data) {
+      addCard(VaultCard.fromJson(item));
+      notifyListeners();
+    }
   }
 
   VaultCard? _findParentCard(String parentId) {

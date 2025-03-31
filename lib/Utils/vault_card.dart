@@ -26,4 +26,22 @@ class VaultCard extends HiveObject {
     required this.isMultiCard,
     List<VaultCard>? subCards,
   }) : subCards = subCards ?? [];
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'account': account,
+        'password': password,
+        'isMultiCard': isMultiCard,
+        'subCards': subCards.map((card) => card.toJson()).toList(),
+      };
+
+  factory VaultCard.fromJson(Map<String, dynamic> json) => VaultCard(
+        id: json['id'],
+        account: json['account'],
+        password: json['password'],
+        isMultiCard: json['isMultiCard'],
+        subCards: (json['subCards'] as List)
+            .map((item) => VaultCard.fromJson(item))
+            .toList(),
+      );
 }
