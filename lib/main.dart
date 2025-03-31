@@ -7,19 +7,17 @@ import 'package:vault/Hive/hive_encryption_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HiveEncryptionService.init();
+  final vaultManager = VaultManager();
+  await vaultManager.initialize();
 
   runApp(
-    FutureBuilder(
-        future: VaultManager().initialize(),
-        builder: (context, snapshot) {
-          return ChangeNotifierProvider(
-            create: (context) => VaultManager()..initialize(),
-            child: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              theme: ThemeData.dark(),
-              home: const HomePage(),
-            ),
-          );
-        }),
+    ChangeNotifierProvider(
+      create: (context) => vaultManager,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData.dark(),
+        home: const HomePage(),
+      ),
+    ),
   );
 }

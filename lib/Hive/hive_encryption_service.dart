@@ -19,10 +19,13 @@ class HiveEncryptionService {
   static Future<void> _initEncryption() async {
     final encryptionKey = await _getEncryptionKey();
     await Hive.initFlutter();
-    Hive.registerAdapter(VaultCardAdapter());
+
+    if (!Hive.isAdapterRegistered(VaultCardAdapter().typeId)) {
+      Hive.registerAdapter(VaultCardAdapter());
+    }
+
     // Decode the base64 key to bytes
     final keyBytes = base64Url.decode(encryptionKey);
-
     final encryptionCipher = HiveAesCipher(keyBytes); // Use decoded bytes
 
     await Hive.openBox<VaultCard>(

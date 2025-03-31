@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:circular_menu/circular_menu.dart';
 import 'package:provider/provider.dart';
+import 'package:vault/Pages/settings_page.dart';
 import 'package:vault/Utils/card_creator_dialog.dart';
 import 'package:vault/Utils/card_item.dart';
 import 'package:vault/Utils/navigate_to_multicard.dart';
@@ -16,6 +17,16 @@ class HomePage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('V A U L T'),
           centerTitle: true,
+          actions: [
+            IconButton(
+                onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const SettingsPage(),
+                      ),
+                    ),
+                icon: const Icon(Icons.settings)),
+          ],
         ),
         floatingActionButton: CircularMenu(
           alignment: Alignment.bottomRight,
