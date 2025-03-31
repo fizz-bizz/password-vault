@@ -5,19 +5,19 @@ part 'vault_card.g.dart';
 @HiveType(typeId: 0)
 class VaultCard extends HiveObject {
   @HiveField(0)
-  final String id;
+  String id;
 
   @HiveField(1)
-  final String account;
+  String account;
 
   @HiveField(2)
-  final String? password;
+  String? password;
 
   @HiveField(3)
-  final bool isMultiCard;
+  bool isMultiCard;
 
   @HiveField(4)
-  final List<VaultCard> subCards;
+  List<VaultCard> subCards;
 
   VaultCard({
     required this.id,

@@ -35,6 +35,32 @@ class VaultManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteCard(VaultCard card) {
+    final box = _vaultBox;
+    if (box == null) return;
+
+    if (box.containsKey(card.key)) {
+      box.delete(card.key);
+    } else {
+      final parent = _findParentCard(card.id);
+      if (parent != null) {
+        parent.subCards.removeWhere((c) => c.id == card.id);
+        parent.save();
+      }
+    }
+    notifyListeners();
+  }
+
+  void updateCard(VaultCard card) {
+    if (card.key != null) {
+      card.save();
+    } else {
+      final parent = _findParentCard(card.id);
+      parent?.save();
+    }
+    notifyListeners();
+  }
+
   Future<void> exportBackup(String path) async {
     final data = _vaultBox!.values.map((card) => card.toJson()).toList();
 
@@ -72,10 +98,5 @@ class VaultManager extends ChangeNotifier {
       }
     }
     return null;
-  }
-
-  void updateCard(VaultCard card) {
-    card.save();
-    notifyListeners();
   }
 }

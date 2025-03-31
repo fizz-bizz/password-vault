@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 import 'package:vault/Utils/vault_card.dart';
 import 'package:vault/Utils/vault_manager.dart';
 
-class CardCreatorDialog extends StatefulWidget {
-  final bool isMultiCard;
-  final String? parentId;
+class EditCardDialog extends StatefulWidget {
+  final VaultCard card;
 
-  const CardCreatorDialog({
-    super.key,
-    this.parentId,
-    required this.isMultiCard,
-  });
+  const EditCardDialog({super.key, required this.card});
 
   @override
-  State<CardCreatorDialog> createState() => _CardCreatorDialogState();
+  State<EditCardDialog> createState() => _EditCardDialogState();
 }
 
-class _CardCreatorDialogState extends State<CardCreatorDialog> {
-  final Uuid uuid = const Uuid();
-
+class _EditCardDialogState extends State<EditCardDialog> {
   final _formKey = GlobalKey<FormState>();
-  final _titleController = TextEditingController();
-  final _passwordController = TextEditingController();
+  late TextEditingController _titleController;
+  late TextEditingController _passwordController;
   bool _obscurePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.card.account);
+    _passwordController =
+        TextEditingController(text: widget.card.password ?? '');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class _CardCreatorDialogState extends State<CardCreatorDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Create ${widget.isMultiCard ? 'Multi' : 'Simple'} Card',
+                'Edit Card',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 20),
@@ -46,7 +46,7 @@ class _CardCreatorDialogState extends State<CardCreatorDialog> {
                 decoration: const InputDecoration(labelText: 'Account Name'),
                 validator: (value) => value!.isEmpty ? 'Required' : null,
               ),
-              if (!widget.isMultiCard) ...[
+              if (!widget.card.isMultiCard) ...[
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _passwordController,
@@ -83,17 +83,12 @@ class _CardCreatorDialogState extends State<CardCreatorDialog> {
 
   void _saveCard() {
     if (_formKey.currentState!.validate()) {
-      final newCard = VaultCard(
-        id: uuid.v4(),
-        account: _titleController.text,
-        password: widget.isMultiCard ? null : _passwordController.text,
-        isMultiCard: widget.isMultiCard,
-        subCards: widget.isMultiCard ? [] : null,
-      );
-
       final manager = context.read<VaultManager>();
-      manager.addCard(newCard, widget.parentId);
-
+      widget.card.account = _titleController.text;
+      if (!widget.card.isMultiCard) {
+        widget.card.password = _passwordController.text;
+      }
+      manager.updateCard(widget.card);
       Navigator.pop(context);
     }
   }

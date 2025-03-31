@@ -4,8 +4,9 @@ import 'package:vault/Utils/vault_card.dart';
 class CardItem extends StatelessWidget {
   final VaultCard card;
   final VoidCallback onTap;
+  final VoidCallback onLongPress;
 
-  const CardItem({super.key, required this.card, required this.onTap});
+  const CardItem({super.key, required this.card, required this.onTap, required this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +17,7 @@ class CardItem extends StatelessWidget {
         subtitle: !card.isMultiCard ? Text('••••••••') : null,
         trailing: card.isMultiCard ? const Icon(Icons.arrow_forward_ios) : null,
         onTap: onTap,
+        onLongPress: onLongPress,
       ),
     );
   }

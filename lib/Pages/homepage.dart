@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:vault/Pages/settings_page.dart';
 import 'package:vault/Utils/card_creator_dialog.dart';
 import 'package:vault/Utils/card_item.dart';
+import 'package:vault/Utils/edit_card_dialog.dart';
 import 'package:vault/Utils/navigate_to_multicard.dart';
 import 'package:vault/Utils/show_card_details.dart';
 import 'package:vault/Utils/vault_manager.dart';
@@ -66,6 +67,58 @@ class HomePage extends StatelessWidget {
                     onTap: () => card.isMultiCard
                         ? navigateToMultiCard(context, card)
                         : showCardDetails(context, card),
+                    onLongPress: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) => Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ListTile(
+                              leading: const Icon(Icons.edit),
+                              title: const Text('Edit'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                showDialog(
+                                  context: context,
+                                  builder: (_) => EditCardDialog(card: card),
+                                );
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.delete),
+                              title: const Text('Delete'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('Delete Card'),
+                                    content: const Text(
+                                        'Are you sure you want to delete this card?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          manager.deleteCard(card);
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text(
+                                          'Delete',
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              },
+                            )
+                          ],
+                        ),
+                      );
+                    },
                   );
                 });
           },
