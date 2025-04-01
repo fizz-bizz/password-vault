@@ -26,10 +26,30 @@ class MultiCardPage extends StatelessWidget {
       floatingActionButton: CircularMenu(
         alignment: Alignment.bottomRight,
         toggleButtonAnimatedIconData: AnimatedIcons.add_event,
-        toggleButtonBoxShadow: [],
+        toggleButtonBoxShadow: [
+          BoxShadow(
+            color: Colors.purpleAccent.withAlpha(200),
+            spreadRadius: 3,
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+          BoxShadow(
+            color: Colors.blueAccent.withAlpha(200),
+            spreadRadius: 3,
+            blurRadius: 6,
+            offset: const Offset(0, -1),
+          ),
+        ],
         items: [
           CircularMenuItem(
-            boxShadow: [],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blue.withAlpha(250),
+                spreadRadius: 2,
+                blurRadius: 8,
+                offset: const Offset(0, 0),
+              ),
+            ],
             icon: Icons.add_card,
             onTap: () => showDialog(
               context: context,
@@ -40,7 +60,14 @@ class MultiCardPage extends StatelessWidget {
             ),
           ),
           CircularMenuItem(
-            boxShadow: [],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.purpleAccent.withAlpha(250),
+                spreadRadius: 2,
+                blurRadius: 8,
+                offset: const Offset(0, 1),
+              ),
+            ],
             icon: Icons.library_add,
             onTap: () => showDialog(
               context: context,
